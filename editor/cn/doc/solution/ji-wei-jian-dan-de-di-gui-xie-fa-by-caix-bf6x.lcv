@@ -1,0 +1,34 @@
+* java
+
+```java
+        private Map<Integer, Set<int[]>> verticalMap;
+
+        private int visitSequence = 0;
+
+        public List<List<Integer>> verticalOrder(TreeNode root) {
+            visitSequence = 0;
+            verticalMap = new TreeMap<>();
+            verticalOrder(root, 0, 0);
+            return verticalMap.values()
+                .stream()
+                .map(set -> set.stream().map(val -> val[0]).collect(Collectors.toList()))
+                .collect(Collectors.toList());
+        }
+
+        private void verticalOrder(TreeNode root, int hor, int ver) {
+            if (root == null) {
+                return;
+            }
+            verticalMap.computeIfAbsent(hor, key -> new TreeSet<>((val1, val2) -> {
+                    if (val1[1] == val2[1]) {
+                        return val1[2] - val2[2];
+                    }
+                    return val1[1] - val2[1];
+                }))
+                .add(new int[] {root.val, ver, ++visitSequence});
+            verticalOrder(root.left, hor - 1, ver + 1);
+            verticalOrder(root.right, hor + 1, ver + 1);
+        }
+```
+
+思路：传入水平和垂直左边，从根节点开始，向左水平左边减一，向右水平坐标加一，向下一层垂直坐标加一，visitSequence为全局的访问顺序，用来解决水平坐标和垂直坐标都相同的情况，使用TreeSet保证元素有序。水平坐标用作Map的key。

@@ -1,0 +1,40 @@
+### 解题思路
+
+并查集
+
+### 代码
+
+* python3
+
+```python3
+class UF:
+    def __init__(self, n):
+        self.parent = [k for k in range(n)]
+
+    def union(self, p, q):
+
+        q_root = self.find(q)
+        p_root = self.find(p)
+        if p_root != q_root:
+            self.parent[p_root] = q_root
+
+    def find(self, p):
+        if self.parent[p] == p:
+            return p
+        else:
+            self.parent[p] = self.find(self.parent[p])
+            return self.parent[p]
+
+
+class Solution:
+    def countComponents(self, n: int, edges: List[List[int]]) -> int:
+        uf = UF(n)
+        for elem in edges:
+            uf.union(elem[0], elem[1])
+        father_set = set()
+        for i in range(n):
+            father_set.add(uf.find(i))
+        return len(father_set)
+
+```
+
